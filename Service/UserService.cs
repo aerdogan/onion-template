@@ -1,6 +1,5 @@
-﻿using Infrastructure;
+﻿using Domain;
 using Repository;
-using Repository.DB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -26,14 +25,13 @@ namespace Service
         {
             try
             {
-                var obj = new TblUser();
+                var obj = new User();
                 obj.FirstName = user.FirstName;
-                obj.MiddleName = user.MiddleName;
                 obj.LastName = user.LastName;
                 var result = await _userRepository.Add(obj);
                 return result;
             }
-            catch 
+            catch
             {
 
                 return false;
@@ -47,7 +45,7 @@ namespace Service
                 var result = await _userRepository.Delete(id);
                 return result;
             }
-            catch 
+            catch
             {
                 return false;
             }
@@ -64,7 +62,6 @@ namespace Service
                 {
                     Id = item.Id,
                     FirstName = item.FirstName,
-                    MiddleName = item.MiddleName,
                     LastName = item.LastName
                 });
             }
@@ -77,7 +74,6 @@ namespace Service
             var userDM = new User();
             userDM.Id = result.Id;
             userDM.FirstName = result.FirstName;
-            userDM.MiddleName = result.MiddleName;
             userDM.LastName = result.LastName;
             return userDM;
         }
@@ -86,15 +82,14 @@ namespace Service
         {
             try
             {
-                var obj = new TblUser();
+                var obj = new User();
                 obj.Id = user.Id;
                 obj.FirstName = user.FirstName;
-                obj.MiddleName = user.MiddleName;
                 obj.LastName = user.LastName;
                 var result = await _userRepository.Update(obj);
                 return result;
             }
-            catch 
+            catch
             {
                 return false;
             }

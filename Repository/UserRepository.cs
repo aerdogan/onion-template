@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Repository.DB;
+﻿using Domain;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,25 +8,28 @@ namespace Repository
 {
     public interface IUserRepository
     {
-        Task<bool> Add(TblUser user);
-        Task<bool> Update(TblUser user);
-        Task<List<TblUser>> GetAll();
-        Task<TblUser> GetById(int id);
+        Task<bool> Add(User user);
+        Task<bool> Update(User user);
+        Task<List<User>> GetAll();
+        Task<User> GetById(int id);
         Task<bool> Delete(int id);
     }
 
     public class UserRepository : IUserRepository
     {
+
         private readonly OnionDBContext _context;
+
         public UserRepository(OnionDBContext context)
         {
             _context = context;
         }
-        public async Task<bool> Add(TblUser user)
+
+        public async Task<bool> Add(User user)
         {
             try
             {
-                await _context.TblUser.AddAsync(user);
+                await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -36,14 +39,29 @@ namespace Repository
             }
         }
 
+        public async Task<bool> Update(User user)
+        {
+            try
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
         public async Task<bool> Delete(int id)
         {
             try
             {
-                var result = await _context.TblUser.Where(e => e.Id == id).FirstOrDefaultAsync();
+                var result = await _context.Users.Where(e => e.Id == id).FirstOrDefaultAsync();
                 if (result != null)
                 {
-                    _context.TblUser.Remove(result);
+                    _context.Users.Remove(result);
                     await _context.SaveChangesAsync();
                 }
                 return true;
@@ -54,31 +72,17 @@ namespace Repository
             }
         }
 
-        public async Task<List<TblUser>> GetAll()
+        public async Task<User> GetById(int id)
         {
-            var result = await _context.TblUser.ToListAsync();
+            var result = await _context.Users.Where(e => e.Id == id).FirstOrDefaultAsync();
             return result;
         }
 
-        public async Task<TblUser> GetById(int id)
+        public async Task<List<User>> GetAll()
         {
-            var result = await _context.TblUser.Where(e => e.Id == id).FirstOrDefaultAsync();
+            var result = await _context.Users.ToListAsync();
             return result;
         }
 
-        public async Task<bool> Update(TblUser user)
-        {
-            try
-            {
-                _context.TblUser.Update(user);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
     }
 }
