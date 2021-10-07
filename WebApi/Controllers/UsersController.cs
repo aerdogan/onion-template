@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Threading.Tasks;
 
 namespace WebUI.Controllers
 {
@@ -24,26 +25,35 @@ namespace WebUI.Controllers
         }
 
         [HttpGet("getall")]
-        public IActionResult GetList()
+        public async Task<IActionResult> GetList()
         {
-            var result = _userService.GetAllAsync();
+            var result = await _userService.GetAllAsync();
             if (result != null ) return Ok(result);
             return BadRequest();
         }
 
-        [HttpGet("add")]
-        public IActionResult Add(User user)
+        [HttpPost("add")]
+        public async Task<IActionResult> Add(User user)
         {
-            var result = _userService.AddAsync(user);
-            if (result != null) return Ok(result);
+            var result = await _userService.AddAsync(user);
+            if (result) return Ok(result);
             return BadRequest();
         }
 
-        [HttpGet("update")]
-        public IActionResult Update(User user)
+        [HttpPost("update")]
+        public async Task<IActionResult> Update(User user)
         {
-            var result = _userService.UpdateAsync(user);
-            if (result != null) return Ok(result);
+            var result = await _userService.UpdateAsync(user);
+            if (result) return Ok(result);
+            return BadRequest();
+        }
+
+
+        [HttpPost("delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _userService.DeleteAsync(id);
+            if (result) return Ok(result);
             return BadRequest();
         }
     }
